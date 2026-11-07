@@ -7,3 +7,4 @@
 runs/
 output/
 __pycache__/
+.idea/
