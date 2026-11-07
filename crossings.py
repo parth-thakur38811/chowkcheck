@@ -86,7 +86,8 @@ def main():
     for kind, n in wrong_way.items():
         print(f"  {kind}: {n}")
 
-    speeds, excluded = compute_speeds(tracks)
+    distance_m = ask_distance(DISTANCE_M)
+    speeds, excluded = compute_speeds(tracks, distance_m)
     summary = summarise_speeds(speeds)
     print(f"Speeds measured: {len(speeds)} ({excluded} readings excluded as impossible)")
     if summary["average"] is None:
@@ -99,8 +100,20 @@ def main():
             print(f"  Speeding (over the {SPEED_LIMIT_KMH} km/h limit): {summary['over_limit']}")
 
 
-def compute_speeds(tracks):
-    """Return (list of speeds in km/h, number of readings excluded)."""
+def ask_distance(default):
+    answer = input(f"Distance between line A and line B in metres [{default}]: ").strip()
+    if answer == "":
+        return default
+    try:
+        distance = float(answer)
+    except ValueError:
+        sys.exit("Distance must be a number, e.g. 25 or 25.5")
+    if distance <= 0:
+        sys.exit("Distance must be more than 0.")
+    return distance
+
+
+def compute_speeds(tracks, distance_m):
     excluded = 0
     speeds = []
     for track in tracks.values():
@@ -110,9 +123,7 @@ def compute_speeds(tracks):
             continue
         if time == 0:
             continue
-        # Round to 0.1 km/h: removes tiny computer-arithmetic errors like 30.000000000000004.
-        speed = round(DISTANCE_M / time * 3.6, 1)
-        # Only two outcomes: a believable speed is kept, anything else is a tracking mistake.
+        speed = round(distance_m/ time * 3.6, 1)
         if 3 <= speed <= 120:
             speeds.append(speed)
         else:
@@ -121,7 +132,6 @@ def compute_speeds(tracks):
 
 
 def summarise_speeds(speeds):
-    """Return a dictionary: average, median, over_who, over_limit."""
     if not speeds:
         return {"average": None, "median": None, "over_who": 0, "over_limit": None}
 
@@ -130,7 +140,7 @@ def summarise_speeds(speeds):
         if speed > WHO_LIMIT_KMH:
             over_who += 1
 
-    # Only count "speeding" if the user told us the road's legal limit.
+
     over_limit = None
     if SPEED_LIMIT_KMH is not None:
         over_limit = 0

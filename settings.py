@@ -1,5 +1,5 @@
-LINE_A = ((0, 300), (1280, 300))
-LINE_B = ((0, 550), (1280, 550))
+LINE_A = ((0, 420), (892, 420))
+LINE_B = ((0, 150), (892, 150))
 DISTANCE_M = 25.0
 WHO_LIMIT_KMH = 30
 SPEED_LIMIT_KMH = None
