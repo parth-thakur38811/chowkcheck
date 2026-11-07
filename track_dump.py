@@ -30,7 +30,7 @@ def dump_tracks(model, video_path, csv_path):
             while True:
                 ok, frame = video.read()
                 if not ok:
-                    break                                   
+                    break
                 t = video.get(cv2.CAP_PROP_POS_MSEC) / 1000
                 result = model.track(frame, persist=True, classes=VEHICLE_CLASSES, verbose=False)[0]
                 annotated = result.plot()
