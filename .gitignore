@@ -1,0 +1,9 @@
+*.mp4
+*.mov
+*.avi
+*.jpg
+*.png
+*.pt
+runs/
+output/
+__pycache__/
